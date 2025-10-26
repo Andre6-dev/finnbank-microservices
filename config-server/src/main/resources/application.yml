@@ -1,0 +1,46 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config
+        git:
+          uri: https://github.com/Andre6-dev/config-server-fluxbank
+          clone-on-start: true
+          default-label: main
+          timeout: 5
+          search-paths: '{application}'
+          # Uncomment if repository is private
+          # username: ${GIT_USERNAME}
+          # password: ${GIT_PASSWORD}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh,env
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    com.finnova: DEBUG
+    org.springframework.cloud.config: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/config-server.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
