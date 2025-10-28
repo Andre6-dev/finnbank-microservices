@@ -134,25 +134,21 @@ customerDb.customers.insertMany([
 print('customer_db initialized with seed data');
 
 // ========================================
-// PRODUCTS_DB (Unificado: Productos Pasivos y Activos)
+// PASSIVE_PRODUCT_DB
 // ========================================
-const productsDb = db.getSiblingDB('products_db');
+const passiveProductDb = db.getSiblingDB('passive_product_db');
 
-// Create indexes para productos pasivos
-productsDb.products.createIndex({"accountNumber": 1}, {unique: true, sparse: true});
-productsDb.products.createIndex({"creditNumber": 1}, {unique: true, sparse: true});
-productsDb.products.createIndex({"customerId": 1});
-productsDb.products.createIndex({"productCategory": 1}); // PASSIVE o ACTIVE
-productsDb.products.createIndex({"productType": 1});
-productsDb.products.createIndex({"status": 1});
-productsDb.products.createIndex({"hasOverdueDebt": 1});
+// Create indexes
+passiveProductDb.passive_products.createIndex({"accountNumber": 1}, {unique: true});
+passiveProductDb.passive_products.createIndex({"customerId": 1});
+passiveProductDb.passive_products.createIndex({"productType": 1});
+passiveProductDb.passive_products.createIndex({"status": 1});
 
-// Insert seed data - Productos Pasivos
-productsDb.products.insertMany([
+// Insert seed data
+passiveProductDb.passive_products.insertMany([
     // Cuentas de Ahorro
     {
         _id: ObjectId("651000000000000000000001"),
-        productCategory: "PASSIVE",
         productType: "SAVINGS_ACCOUNT",
         accountNumber: "1001234567890",
         customerId: ObjectId("650000000000000000000001"),
@@ -168,7 +164,6 @@ productsDb.products.insertMany([
     },
     {
         _id: ObjectId("651000000000000000000002"),
-        productCategory: "PASSIVE",
         productType: "SAVINGS_ACCOUNT",
         accountNumber: "1001234567891",
         customerId: ObjectId("650000000000000000000002"),
@@ -185,7 +180,6 @@ productsDb.products.insertMany([
     // Cuentas Corrientes
     {
         _id: ObjectId("651000000000000000000003"),
-        productCategory: "PASSIVE",
         productType: "CHECKING_ACCOUNT",
         accountNumber: "2001234567890",
         customerId: ObjectId("650000000000000000000001"),
@@ -198,7 +192,6 @@ productsDb.products.insertMany([
     },
     {
         _id: ObjectId("651000000000000000000004"),
-        productCategory: "PASSIVE",
         productType: "CHECKING_ACCOUNT",
         accountNumber: "2001234567891",
         customerId: ObjectId("650000000000000000000003"),
@@ -212,7 +205,6 @@ productsDb.products.insertMany([
     // Plazo Fijo
     {
         _id: ObjectId("651000000000000000000005"),
-        productCategory: "PASSIVE",
         productType: "FIXED_TERM",
         accountNumber: "3001234567890",
         customerId: ObjectId("650000000000000000000002"),
@@ -225,15 +217,47 @@ productsDb.products.insertMany([
         createdAt: new Date(),
         updatedAt: new Date()
     },
-    // Productos Activos - Créditos
+    {
+        _id: ObjectId("651000000000000000000006"),
+        productType: "SAVINGS_ACCOUNT",
+        accountNumber: "1001234567892",
+        customerId: ObjectId("650000000000000000000003"),
+        balance: 75000.00,
+        currency: "PEN",
+        interestRate: 2.0,
+        monthlyTransactionLimit: 50,
+        transactionsThisMonth: 8,
+        maintenanceFee: 0.00,
+        status: "ACTIVE",
+        createdAt: new Date(),
+        updatedAt: new Date()
+    }
+]);
+
+print('passive_product_db initialized with seed data');
+
+// ========================================
+// ACTIVE_PRODUCT_DB
+// ========================================
+const activeProductDb = db.getSiblingDB('active_product_db');
+
+// Create indexes
+activeProductDb.active_products.createIndex({"creditNumber": 1}, {unique: true});
+activeProductDb.active_products.createIndex({"customerId": 1});
+activeProductDb.active_products.createIndex({"productType": 1});
+activeProductDb.active_products.createIndex({"status": 1});
+activeProductDb.active_products.createIndex({"hasOverdueDebt": 1});
+
+// Insert seed data
+activeProductDb.active_products.insertMany([
     {
         _id: ObjectId("652000000000000000000001"),
-        productCategory: "ACTIVE",
         productType: "PERSONAL_CREDIT",
         creditNumber: "4001234567890",
         customerId: ObjectId("650000000000000000000001"),
         creditLimit: 10000.00,
         currentDebt: 3500.00,
+        availableCredit: 6500.00,
         interestRate: 18.5,
         currency: "PEN",
         paymentDay: 15,
@@ -245,12 +269,12 @@ productsDb.products.insertMany([
     },
     {
         _id: ObjectId("652000000000000000000002"),
-        productCategory: "ACTIVE",
         productType: "CREDIT_CARD",
         creditNumber: "4001234567891",
         customerId: ObjectId("650000000000000000000002"),
         creditLimit: 15000.00,
         currentDebt: 5200.00,
+        availableCredit: 9800.00,
         interestRate: 35.0,
         currency: "PEN",
         paymentDay: 20,
@@ -262,12 +286,12 @@ productsDb.products.insertMany([
     },
     {
         _id: ObjectId("652000000000000000000003"),
-        productCategory: "ACTIVE",
         productType: "BUSINESS_CREDIT",
         creditNumber: "4001234567892",
         customerId: ObjectId("650000000000000000000003"),
         creditLimit: 100000.00,
         currentDebt: 45000.00,
+        availableCredit: 55000.00,
         interestRate: 12.5,
         currency: "PEN",
         paymentDay: 30,
@@ -276,10 +300,46 @@ productsDb.products.insertMany([
         status: "ACTIVE",
         createdAt: new Date(),
         updatedAt: new Date()
+    },
+    {
+        _id: ObjectId("652000000000000000000004"),
+        productType: "PERSONAL_CREDIT",
+        creditNumber: "4001234567893",
+        customerId: ObjectId("650000000000000000000001"),
+        creditLimit: 5000.00,
+        currentDebt: 2000.00,
+        availableCredit: 3000.00,
+        interestRate: 22.0,
+        currency: "PEN",
+        paymentDay: 10,
+        minimumPayment: 200.00,
+        hasOverdueDebt: true,
+        overdueAmount: 500.00,
+        overdueSince: new Date("2025-01-10"),
+        status: "ACTIVE",
+        createdAt: new Date(),
+        updatedAt: new Date()
+    },
+    {
+        _id: ObjectId("652000000000000000000005"),
+        productType: "CREDIT_CARD",
+        creditNumber: "4001234567894",
+        customerId: ObjectId("650000000000000000000003"),
+        creditLimit: 50000.00,
+        currentDebt: 12000.00,
+        availableCredit: 38000.00,
+        interestRate: 28.0,
+        currency: "PEN",
+        paymentDay: 25,
+        minimumPayment: 1200.00,
+        hasOverdueDebt: false,
+        status: "ACTIVE",
+        createdAt: new Date(),
+        updatedAt: new Date()
     }
 ]);
 
-print('products_db initialized with seed data');
+print('active_product_db initialized with seed data');
 
 // ========================================
 // TRANSACTION_DB
