@@ -10,7 +10,8 @@ print('Authenticated successfully as root user');
 const databases = [
     'auth_db',
     'customer_db',
-    'products_db',  // Unificado: antes passive_product_db y active_product_db
+    'passive_product_db',
+    'active_product_db',
     'transaction_db',
     'debit_card_db',
     'transfer_db',
@@ -357,6 +358,7 @@ transactionDb.transactions.createIndex({"transactionDate": -1});
 transactionDb.transactions.insertMany([
     {
         transactionNumber: "TXN20250101000001",
+        customerId: ObjectId("650000000000000000000001"),
         productId: ObjectId("651000000000000000000001"),
         transactionType: "DEPOSIT",
         amount: 1000.00,
@@ -369,6 +371,7 @@ transactionDb.transactions.insertMany([
     },
     {
         transactionNumber: "TXN20250101000002",
+        customerId: ObjectId("650000000000000000000001"),
         productId: ObjectId("651000000000000000000001"),
         transactionType: "WITHDRAWAL",
         amount: 500.00,
@@ -381,6 +384,7 @@ transactionDb.transactions.insertMany([
     },
     {
         transactionNumber: "TXN20250101000003",
+        customerId: ObjectId("650000000000000000000001"),
         productId: ObjectId("652000000000000000000001"),
         transactionType: "CREDIT_CONSUMPTION",
         amount: 1500.00,
@@ -393,6 +397,7 @@ transactionDb.transactions.insertMany([
     },
     {
         transactionNumber: "TXN20250101000004",
+        customerId: ObjectId("650000000000000000000001"),
         productId: ObjectId("652000000000000000000001"),
         transactionType: "CREDIT_PAYMENT",
         amount: 500.00,
@@ -405,6 +410,7 @@ transactionDb.transactions.insertMany([
     },
     {
         transactionNumber: "TXN20250101000005",
+        customerId: ObjectId("650000000000000000000001"),
         productId: ObjectId("651000000000000000000003"),
         transactionType: "TRANSFER_OUT",
         amount: 2000.00,
