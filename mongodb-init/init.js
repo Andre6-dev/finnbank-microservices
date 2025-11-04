@@ -137,7 +137,7 @@ print('customer_db initialized with seed data');
 // ========================================
 // PASSIVE_PRODUCT_DB
 // ========================================
-const passiveProductDb = db.getSiblingDB('passive_product_db');
+const passiveProductDb = db.getSiblingDB('products_db');
 
 // Create indexes
 passiveProductDb.passive_products.createIndex({"accountNumber": 1}, {unique: true});
@@ -240,7 +240,7 @@ print('passive_product_db initialized with seed data');
 // ========================================
 // ACTIVE_PRODUCT_DB
 // ========================================
-const activeProductDb = db.getSiblingDB('active_product_db');
+const activeProductDb = db.getSiblingDB('products_db');
 
 // Create indexes
 activeProductDb.active_products.createIndex({"creditNumber": 1}, {unique: true});
@@ -253,7 +253,7 @@ activeProductDb.active_products.createIndex({"hasOverdueDebt": 1});
 activeProductDb.active_products.insertMany([
     {
         _id: ObjectId("652000000000000000000001"),
-        productType: "PERSONAL_CREDIT",
+        productType: "PERSONAL_LOAN",
         creditNumber: "4001234567890",
         customerId: ObjectId("650000000000000000000001"),
         creditLimit: 10000.00,
@@ -304,7 +304,7 @@ activeProductDb.active_products.insertMany([
     },
     {
         _id: ObjectId("652000000000000000000004"),
-        productType: "PERSONAL_CREDIT",
+        productType: "PERSONAL_LOAN",
         creditNumber: "4001234567893",
         customerId: ObjectId("650000000000000000000001"),
         creditLimit: 5000.00,
@@ -386,7 +386,7 @@ transactionDb.transactions.insertMany([
         transactionNumber: "TXN20250101000003",
         customerId: ObjectId("650000000000000000000001"),
         productId: ObjectId("652000000000000000000001"),
-        transactionType: "CREDIT_CONSUMPTION",
+        transactionType: "CREDIT_CHARGE",
         amount: 1500.00,
         currency: "PEN",
         description: "Compra en tienda",
@@ -399,7 +399,7 @@ transactionDb.transactions.insertMany([
         transactionNumber: "TXN20250101000004",
         customerId: ObjectId("650000000000000000000001"),
         productId: ObjectId("652000000000000000000001"),
-        transactionType: "CREDIT_PAYMENT",
+        transactionType: "PAYMENT",
         amount: 500.00,
         currency: "PEN",
         description: "Pago de crédito",

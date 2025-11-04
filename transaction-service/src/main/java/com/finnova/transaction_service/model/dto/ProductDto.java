@@ -20,6 +20,7 @@ public class ProductDto {
     private BigDecimal balance;
     private BigDecimal creditLimit;
     private BigDecimal availableBalance;
+    private BigDecimal availableCredit;
     private String currency;
     private String status;
     private Integer monthlyTransactionCount; // Para calcular comisiones

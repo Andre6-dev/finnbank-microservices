@@ -9,6 +9,7 @@ import com.finnova.card_service.model.dto.TransactionDto;
 import com.finnova.card_service.model.dto.WithdrawalRequest;
 import com.finnova.card_service.model.entity.DebitCard;
 import com.finnova.card_service.service.DebitCardService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class DebitCardController {
     // ========== CREATE ==========
 
     @PostMapping
-//    @Operation(summary = "Create a new debit card")
+    @Operation(summary = "Create a new debit card")
     public Mono<ResponseEntity<DebitCardResponse>> createDebitCard(
             @Valid @RequestBody CreateDebitCardRequest request
     ) {
@@ -54,7 +55,7 @@ public class DebitCardController {
     // ========== ASSOCIATE ACCOUNTS ==========
 
     @PostMapping("/{id}/associate-account")
-//    @Operation(summary = "Associate an account to the debit card")
+    @Operation(summary = "Associate an account to the debit card")
     public Mono<ResponseEntity<DebitCardResponse>> associateAccount(
             @PathVariable String id,
             @Valid @RequestBody AssociateAccountRequest request
@@ -67,7 +68,7 @@ public class DebitCardController {
     }
 
     @PutMapping("/{id}/main-account")
-//    @Operation(summary = "Set main account for the debit card")
+    @Operation(summary = "Set main account for the debit card")
     public Mono<ResponseEntity<DebitCardResponse>> setMainAccount(
             @PathVariable String id,
             @RequestParam String accountId
@@ -82,7 +83,7 @@ public class DebitCardController {
     // ========== PAYMENT & WITHDRAWAL ==========
 
     @PostMapping("/{id}/payment")
-//    @Operation(summary = "Make payment with debit card")
+    @Operation(summary = "Make payment with debit card")
     public Mono<ResponseEntity<TransactionDto>> makePayment(
             @PathVariable String id,
             @Valid @RequestBody PaymentRequest request
@@ -97,7 +98,7 @@ public class DebitCardController {
     }
 
     @PostMapping("/{id}/withdrawal")
-//    @Operation(summary = "Make withdrawal with debit card")
+    @Operation(summary = "Make withdrawal with debit card")
     public Mono<ResponseEntity<TransactionDto>> makeWithdrawal(
             @PathVariable String id,
             @Valid @RequestBody WithdrawalRequest request
@@ -114,7 +115,7 @@ public class DebitCardController {
     // ========== QUERIES ==========
 
     @GetMapping("/{id}")
-//    @Operation(summary = "Get debit card by ID")
+    @Operation(summary = "Get debit card by ID")
     public Mono<ResponseEntity<DebitCardResponse>> getDebitCardById(@PathVariable String id) {
         log.info("Fetching debit card: {}", id);
         return debitCardService.getDebitCardById(id)
@@ -124,7 +125,7 @@ public class DebitCardController {
     }
 
     @GetMapping("/customer/{customerId}")
-//    @Operation(summary = "Get all debit cards for a customer")
+    @Operation(summary = "Get all debit cards for a customer")
     public Flux<DebitCardResponse> getDebitCardsByCustomer(@PathVariable String customerId) {
         log.info("Fetching debit cards for customer: {}", customerId);
         return debitCardService.getDebitCardsByCustomer(customerId)
@@ -132,7 +133,7 @@ public class DebitCardController {
     }
 
     @GetMapping("/{id}/balance")
-//    @Operation(summary = "Get main account balance")
+    @Operation(summary = "Get main account balance")
     public Mono<ResponseEntity<BalanceResponse>> getMainAccountBalance(@PathVariable String id) {
         log.info("Fetching balance for card: {}", id);
         return debitCardService.getMainAccountBalance(id)
@@ -144,14 +145,14 @@ public class DebitCardController {
     }
 
     @GetMapping("/{id}/movements")
-//    @Operation(summary = "Get last 10 movements")
+    @Operation(summary = "Get last 10 movements")
     public Flux<TransactionDto> getLast10Movements(@PathVariable String id) {
         log.info("Fetching last 10 movements for card: {}", id);
         return debitCardService.getLast10Movements(id);
     }
 
     @GetMapping
-//    @Operation(summary = "Get all debit cards")
+    @Operation(summary = "Get all debit cards")
     public Flux<DebitCardResponse> getAllDebitCards() {
         log.info("Fetching all debit cards");
         return debitCardService.getAllDebitCards()
@@ -161,7 +162,7 @@ public class DebitCardController {
     // ========== UPDATE & DELETE ==========
 
     @PutMapping("/{id}")
-//    @Operation(summary = "Update debit card")
+    @Operation(summary = "Update debit card")
     public Mono<ResponseEntity<DebitCardResponse>> updateDebitCard(
             @PathVariable String id,
             @Valid @RequestBody DebitCard debitCard
@@ -174,7 +175,7 @@ public class DebitCardController {
     }
 
     @DeleteMapping("/{id}")
-//    @Operation(summary = "Cancel debit card")
+    @Operation(summary = "Cancel debit card")
     public Mono<ResponseEntity<Void>> deleteDebitCard(@PathVariable String id) {
         log.info("Cancelling debit card: {}", id);
         return debitCardService.deleteDebitCard(id)

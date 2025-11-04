@@ -1,6 +1,7 @@
 package com.finnova.products_service.client;
 
 import com.finnova.products_service.client.dto.CustomerResponse;
+import com.finnova.products_service.client.dto.CustomerValidationResponse;
 import com.finnova.products_service.exception.CustomerValidationException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
@@ -19,7 +20,7 @@ import java.util.Map;
 @Slf4j
 public class CustomerClient {
 
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient webClient;
 
     @Value("${services.customer-service.url:http://customer-service}")
     private String customerServiceUrl;
@@ -35,13 +36,13 @@ public class CustomerClient {
     public Mono<Boolean> validateCustomer(String customerId) {
         log.debug("Validating customer: {}", customerId);
 
-        return webClientBuilder.build()
+        return webClient
                 .get()
                 .uri(customerServiceUrl + "/customers/{id}/validate", customerId)
                 .retrieve()
-                .bodyToMono(Map.class)
+                .bodyToMono(CustomerValidationResponse.class)
                 .timeout(Duration.ofSeconds(5))
-                .map(response -> (Boolean) response.get("valid"))
+                .map(CustomerValidationResponse::getValid)
                 .doOnSuccess(valid -> log.debug("Customer {} validation result: {}", customerId, valid))
                 .doOnError(error -> log.error("Error validating customer {}: {}", customerId, error.getMessage()));
     }
@@ -57,7 +58,7 @@ public class CustomerClient {
     public Mono<CustomerResponse> getCustomer(String customerId) {
         log.debug("Getting customer: {}", customerId);
 
-        return webClientBuilder.build()
+        return webClient
                 .get()
                 .uri(customerServiceUrl + "/customers/{id}", customerId)
                 .retrieve()

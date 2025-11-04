@@ -11,6 +11,7 @@ import com.finnova.transaction_service.model.dto.WithdrawalRequest;
 import com.finnova.transaction_service.model.entity.Transaction;
 import com.finnova.transaction_service.service.TransactionService;
 import com.finnova.transaction_service.service.TransferService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/transactions")
 @RequiredArgsConstructor
 @Slf4j
 public class TransactionController {
@@ -39,7 +40,7 @@ public class TransactionController {
     // ========== DEPOSIT ==========
 
     @PostMapping("/deposit")
-//    @Operation(summary = "Process a deposit")
+    @Operation(summary = "Process a deposit")
     public Mono<ResponseEntity<TransactionResponse>> deposit(@Valid @RequestBody DepositRequest request) {
         log.info("Received deposit request for product: {}", request.getProductId());
         return transactionService.deposit(request)
@@ -54,7 +55,7 @@ public class TransactionController {
     // ========== WITHDRAWAL ==========
 
     @PostMapping("/withdrawal")
-//    @Operation(summary = "Process a withdrawal")
+    @Operation(summary = "Process a withdrawal")
     public Mono<ResponseEntity<TransactionResponse>> withdrawal(@Valid @RequestBody WithdrawalRequest request) {
         log.info("Received withdrawal request for product: {}", request.getProductId());
         return transactionService.withdrawal(request)
@@ -69,7 +70,7 @@ public class TransactionController {
     // ========== PAYMENT (Credit/Credit Card) ==========
 
     @PostMapping("/payment")
-//    @Operation(summary = "Process a payment to credit or credit card")
+    @Operation(summary = "Process a payment to credit or credit card")
     public Mono<ResponseEntity<TransactionResponse>> payment(@Valid @RequestBody PaymentRequest request) {
         log.info("Received payment request for product: {}", request.getProductId());
         return transactionService.payment(request)
@@ -84,7 +85,7 @@ public class TransactionController {
     // ========== CREDIT CHARGE (Consumo de tarjeta) ==========
 
     @PostMapping("/credit-charge")
-//    @Operation(summary = "Process a credit card charge")
+    @Operation(summary = "Process a credit card charge")
     public Mono<ResponseEntity<TransactionResponse>> creditCharge(@Valid @RequestBody CreditChargeRequest request) {
         log.info("Received credit charge request for card: {}", request.getCreditCardId());
         return transactionService.creditCharge(request)
@@ -99,7 +100,7 @@ public class TransactionController {
     // ========== TRANSFERS ==========
 
     @PostMapping("/transfer/own")
-//    @Operation(summary = "Transfer between own accounts")
+    @Operation(summary = "Transfer between own accounts")
     public Mono<ResponseEntity<TransactionResponse>> transferOwnAccounts(@Valid @RequestBody TransferRequest request) {
         log.info("Received transfer request between own accounts: {} -> {}",
                 request.getSourceProductId(), request.getDestinationProductId());
@@ -113,7 +114,7 @@ public class TransactionController {
     }
 
     @PostMapping("/transfer/third-party")
-//    @Operation(summary = "Transfer to third party account")
+    @Operation(summary = "Transfer to third party account")
     public Mono<ResponseEntity<TransactionResponse>> transferThirdParty(@Valid @RequestBody TransferRequest request) {
         log.info("Received transfer request to third party: {} -> {}",
                 request.getSourceProductId(), request.getDestinationProductId());
@@ -129,7 +130,7 @@ public class TransactionController {
     // ========== QUERIES ==========
 
     @GetMapping("/{id}")
-//    @Operation(summary = "Get transaction by ID")
+    @Operation(summary = "Get transaction by ID")
     public Mono<ResponseEntity<TransactionResponse>> getTransactionById(@PathVariable String id) {
         log.info("Fetching transaction: {}", id);
         return transactionService.getTransactionById(id)
@@ -139,7 +140,7 @@ public class TransactionController {
     }
 
     @GetMapping("/product/{productId}")
-//    @Operation(summary = "Get all transactions for a product")
+    @Operation(summary = "Get all transactions for a product")
     public Flux<TransactionResponse> getTransactionsByProduct(@PathVariable String productId) {
         log.info("Fetching transactions for product: {}", productId);
         return transactionService.getTransactionsByProduct(productId)
@@ -147,7 +148,7 @@ public class TransactionController {
     }
 
     @GetMapping("/customer/{customerId}")
-//    @Operation(summary = "Get all transactions for a customer")
+    @Operation(summary = "Get all transactions for a customer")
     public Flux<TransactionResponse> getTransactionsByCustomer(@PathVariable String customerId) {
         log.info("Fetching transactions for customer: {}", customerId);
         return transactionService.getTransactionsByCustomer(customerId)
@@ -155,7 +156,7 @@ public class TransactionController {
     }
 
     @GetMapping("/product/{productId}/last10")
-//    @Operation(summary = "Get last 10 transactions for a product")
+    @Operation(summary = "Get last 10 transactions for a product")
     public Flux<TransactionResponse> getLast10Transactions(@PathVariable String productId) {
         log.info("Fetching last 10 transactions for product: {}", productId);
         return transactionService.getLast10Transactions(productId)
@@ -163,7 +164,7 @@ public class TransactionController {
     }
 
     @GetMapping("/product/{productId}/balance")
-//    @Operation(summary = "Get current balance for a product")
+    @Operation(summary = "Get current balance for a product")
     public Mono<ResponseEntity<BalanceResponse>> getBalance(@PathVariable String productId) {
         log.info("Fetching balance for product: {}", productId);
         return transactionService.getProductBalance(productId)
@@ -177,7 +178,7 @@ public class TransactionController {
     // ========== CRUD Operations ==========
 
     @GetMapping
-//    @Operation(summary = "Get all transactions")
+    @Operation(summary = "Get all transactions")
     public Flux<TransactionResponse> getAllTransactions() {
         log.info("Fetching all transactions");
         return transactionService.getAllTransactions()
@@ -185,7 +186,7 @@ public class TransactionController {
     }
 
     @PutMapping("/{id}")
-//    @Operation(summary = "Update transaction")
+    @Operation(summary = "Update transaction")
     public Mono<ResponseEntity<TransactionResponse>> updateTransaction(
             @PathVariable String id,
             @Valid @RequestBody Transaction transaction
@@ -198,7 +199,7 @@ public class TransactionController {
     }
 
     @DeleteMapping("/{id}")
-//    @Operation(summary = "Delete transaction")
+    @Operation(summary = "Delete transaction")
     public Mono<ResponseEntity<Void>> deleteTransaction(@PathVariable String id) {
         log.info("Deleting transaction: {}", id);
         return transactionService.deleteTransaction(id)

@@ -1,27 +1,30 @@
 package com.finnova.transaction_service.client;
 
 import com.finnova.transaction_service.model.dto.CustomerDto;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class CustomerClient {
 
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient customerServiceWebClient;
 
     @Value("${services.customer-service.url:http://customer-service}")
     private String customerServiceUrl;
 
+    public CustomerClient(@Qualifier("customerServiceWebClient") WebClient customerServiceWebClient) {
+        this.customerServiceWebClient = customerServiceWebClient;
+    }
+
     public Mono<CustomerDto> getCustomer(String customerId) {
         log.debug("Getting customer: {}", customerId);
 
-        return webClientBuilder.build()
+        return customerServiceWebClient
                 .get()
                 .uri(customerServiceUrl + "/customers/{id}", customerId)
                 .retrieve()
@@ -33,7 +36,7 @@ public class CustomerClient {
     public Mono<Boolean> hasOverdueDebt(String customerId) {
         log.debug("Checking overdue debt for customer: {}", customerId);
 
-        return webClientBuilder.build()
+        return customerServiceWebClient
                 .get()
                 .uri(customerServiceUrl + "/customers/{id}/overdue-debt", customerId)
                 .retrieve()

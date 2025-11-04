@@ -136,4 +136,15 @@ public class WebClientConfig {
                 .baseUrl("http://customer-service")
                 .build();
     }
+
+    /**
+     * WebClient for products service with specific configuration.
+     *
+     * @param webClientBuilder the WebClient builder
+     * @return the WebClient
+     */
+    @Bean
+    public WebClient webClient(WebClient.Builder webClientBuilder) {
+        return webClientBuilder.build();
+    }
 }

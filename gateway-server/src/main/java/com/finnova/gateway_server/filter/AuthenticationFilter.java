@@ -65,7 +65,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
             // Check if route is secured
             if (validator.isSecured.test(request)) {
-                log.debug("Secured route detected: {} {}",
+                log.info("Secured route detected: {} {}",
                         request.getMethod(),
                         request.getURI().getPath());
 
@@ -154,7 +154,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                             HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
-                log.debug("Public route accessed: {} {}",
+                log.info("Public route accessed: {} {}",
                         request.getMethod(),
                         request.getURI().getPath());
             }

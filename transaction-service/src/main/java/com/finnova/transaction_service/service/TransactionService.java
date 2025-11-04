@@ -83,7 +83,7 @@ public class TransactionService {
                     return transactionRepository.save(transaction)
                             .flatMap(savedTransaction ->
                                     eventPublisher.publishTransactionCreated(savedTransaction)
-                                            .then(productClient.updateBalance(request.getProductId(), newBalance))
+                                            .then(productClient.deposit(request.getProductId(), request.getAmount()))
                                             .flatMap(updatedProduct -> {
                                                 savedTransaction.setStatus(TransactionStatus.COMPLETED);
                                                 savedTransaction.setUpdatedAt(LocalDateTime.now());
@@ -167,7 +167,7 @@ public class TransactionService {
                                 return transactionRepository.save(transaction)
                                         .flatMap(savedTransaction ->
                                                 eventPublisher.publishTransactionCreated(savedTransaction)
-                                                        .then(productClient.updateBalance(request.getProductId(), newBalance))
+                                                        .then(productClient.withdraw(request.getProductId(), totalAmount))
                                                         .flatMap(updatedProduct -> {
                                                             savedTransaction.setStatus(TransactionStatus.COMPLETED);
                                                             savedTransaction.setUpdatedAt(LocalDateTime.now());
@@ -247,7 +247,7 @@ public class TransactionService {
                     return transactionRepository.save(transaction)
                             .flatMap(savedTransaction ->
                                     eventPublisher.publishTransactionCreated(savedTransaction)
-                                            .then(productClient.updateBalance(request.getProductId(), newAvailableBalance))
+                                            .then(productClient.makePayment(request.getProductId(), request.getAmount()))
                                             .flatMap(updatedProduct -> {
                                                 savedTransaction.setStatus(TransactionStatus.COMPLETED);
                                                 savedTransaction.setUpdatedAt(LocalDateTime.now());
@@ -315,7 +315,7 @@ public class TransactionService {
                     return transactionRepository.save(transaction)
                             .flatMap(savedTransaction ->
                                     eventPublisher.publishTransactionCreated(savedTransaction)
-                                            .then(productClient.updateBalance(request.getCreditCardId(), newAvailableBalance))
+                                            .then(productClient.makeCharge(request.getCreditCardId(), request.getAmount()))
                                             .flatMap(updatedProduct -> {
                                                 savedTransaction.setStatus(TransactionStatus.COMPLETED);
                                                 savedTransaction.setUpdatedAt(LocalDateTime.now());

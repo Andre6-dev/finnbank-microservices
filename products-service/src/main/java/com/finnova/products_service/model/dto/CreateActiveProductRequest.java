@@ -2,11 +2,7 @@ package com.finnova.products_service.model.dto;
 
 import com.finnova.products_service.model.enums.ActiveProductType;
 import com.finnova.products_service.model.enums.Currency;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,7 +28,7 @@ public class CreateActiveProductRequest {
 
     @NotNull(message = "Interest rate is required")
     @DecimalMin(value = "0.0", message = "Interest rate must be non-negative")
-    @DecimalMin(value = "100.0", message = "Interest rate cannot exceed 100%")
+    @DecimalMax(value = "100.0", message = "Interest rate cannot exceed 100%")
     private BigDecimal interestRate;
 
     @NotNull(message = "Currency is required")

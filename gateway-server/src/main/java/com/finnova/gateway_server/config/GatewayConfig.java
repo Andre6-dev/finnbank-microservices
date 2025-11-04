@@ -55,7 +55,7 @@ public class GatewayConfig {
                                 .circuitBreaker(c -> c
                                         .setName("passiveProductServiceCircuitBreaker")
                                         .setFallbackUri("forward:/fallback/passive-products")))
-                        .uri("lb://PASSIVE-PRODUCT-SERVICE"))
+                        .uri("lb://PRODUCTS-SERVICE"))
 
                 // Active Product Service Routes
                 .route("active-product-service", r -> r
@@ -65,7 +65,7 @@ public class GatewayConfig {
                                 .circuitBreaker(c -> c
                                         .setName("activeProductServiceCircuitBreaker")
                                         .setFallbackUri("forward:/fallback/active-products")))
-                        .uri("lb://ACTIVE-PRODUCT-SERVICE"))
+                        .uri("lb://PRODUCTS-SERVICE"))
 
                 // Transaction Service Routes
                 .route("transaction-service", r -> r

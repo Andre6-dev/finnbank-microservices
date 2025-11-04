@@ -2,6 +2,7 @@ package com.finnova.customer_service.controller;
 
 import com.finnova.customer_service.model.dto.CreateCustomerRequest;
 import com.finnova.customer_service.model.dto.CustomerDto;
+import com.finnova.customer_service.model.dto.CustomerValidationResponse;
 import com.finnova.customer_service.model.dto.UpdateCustomerRequest;
 import com.finnova.customer_service.model.enums.CustomerType;
 import com.finnova.customer_service.service.CustomerService;
@@ -23,7 +24,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/customers")
 @Slf4j
 public class CustomerController {
 
@@ -146,10 +147,10 @@ public class CustomerController {
      * @return Mono of ResponseEntity with validation result
      */
     @GetMapping("/{id}/validate")
-    public Mono<ResponseEntity<Map<String, Boolean>>> validateCustomer(@PathVariable String id) {
+    public Mono<ResponseEntity<CustomerValidationResponse>> validateCustomer(@PathVariable String id) {
         log.info("GET /customers/{}/validate - Validating customer", id);
         return customerService.validateCustomer(id)
-                .map(isValid -> ResponseEntity.ok(Map.of("valid", isValid)))
+                .map(isValid -> ResponseEntity.ok(new CustomerValidationResponse(isValid)))
                 .doOnSuccess(r -> log.info("Customer validation completed: {}", id))
                 .doOnError(e -> log.error("Error validating customer: {}", e.getMessage()));
     }

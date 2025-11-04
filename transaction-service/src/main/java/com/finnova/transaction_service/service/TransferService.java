@@ -11,6 +11,8 @@ import com.finnova.transaction_service.model.entity.Transaction;
 import com.finnova.transaction_service.model.enums.TransactionStatus;
 import com.finnova.transaction_service.model.enums.TransactionType;
 import com.finnova.transaction_service.repository.TransactionRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,8 +34,8 @@ public class TransferService {
     /**
      * Process transfer between own accounts
      */
-//    @CircuitBreaker(name = "productService", fallbackMethod = "fallbackTransfer")
-//    @TimeLimiter(name = "productService")
+    @CircuitBreaker(name = "productService", fallbackMethod = "fallbackTransfer")
+    @TimeLimiter(name = "productService")
     public Mono<Transaction> transferBetweenOwnAccounts(TransferRequest request) {
         log.info("Processing transfer between own accounts: {} -> {}",
                 request.getSourceProductId(), request.getDestinationProductId());
@@ -44,8 +46,8 @@ public class TransferService {
     /**
      * Process transfer to third party accounts
      */
-//    @CircuitBreaker(name = "productService", fallbackMethod = "fallbackTransfer")
-//    @TimeLimiter(name = "productService")
+    @CircuitBreaker(name = "productService", fallbackMethod = "fallbackTransfer")
+    @TimeLimiter(name = "productService")
     public Mono<Transaction> transferToThirdParty(TransferRequest request) {
         log.info("Processing transfer to third party: {} -> {}",
                 request.getSourceProductId(), request.getDestinationProductId());
@@ -61,13 +63,27 @@ public class TransferService {
 
         return Mono.zip(
                         productClient.getProduct(request.getSourceProductId())
-                                .switchIfEmpty(Mono.error(new ProductNotFoundException("Source product not found"))),
+                                .switchIfEmpty(Mono.error(new ProductNotFoundException(
+                                        "Source product not found: " + request.getSourceProductId()
+                                ))),
                         productClient.getProduct(request.getDestinationProductId())
-                                .switchIfEmpty(Mono.error(new ProductNotFoundException("Destination product not found")))
+                                .switchIfEmpty(Mono.error(new ProductNotFoundException(
+                                        "Destination product not found: " + request.getDestinationProductId()
+                                )))
                 )
                 .flatMap(tuple -> {
                     var sourceProduct = tuple.getT1();
                     var destProduct = tuple.getT2();
+
+                    // ✅ Validación explícita
+                    if (sourceProduct == null || destProduct == null) {
+                        return Mono.error(new ProductNotFoundException("One or both products not found"));
+                    }
+
+                    log.info("Source product found: {} - Balance: {}",
+                            sourceProduct.getId(), sourceProduct.getBalance());
+                    log.info("Destination product found: {} - Balance: {}",
+                            destProduct.getId(), destProduct.getBalance());
 
                     // Validar que sean cuentas del mismo banco (ambos existen en products-service)
                     if (sourceProduct == null || destProduct == null) {
