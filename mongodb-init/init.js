@@ -442,51 +442,18 @@ debitCardDb.debit_cards.insertMany([
         cardNumber: "5412751234567890",
         customerId: ObjectId("650000000000000000000001"),
         mainAccountId: ObjectId("651000000000000000000001"),
-        associatedAccounts: [
-            ObjectId("651000000000000000000001"),
-            ObjectId("651000000000000000000003")
+        associatedAccountIds: [
+            '651000000000000000000001',
+            '651000000000000000000003'
         ],
         cardType: "VISA",
         expirationDate: new Date("2028-12-31"),
         cvv: "123",
-        cardStatus: "ACTIVE",
-        dailyLimit: 2000.00,
-        monthlyLimit: 10000.00,
+        cardHolderName: "JUAN PEREZ",
+        status: "ACTIVE",
         createdAt: new Date(),
         updatedAt: new Date()
     },
-    {
-        cardNumber: "5412759876543210",
-        customerId: ObjectId("650000000000000000000002"),
-        mainAccountId: ObjectId("651000000000000000000002"),
-        associatedAccounts: [
-            ObjectId("651000000000000000000002")
-        ],
-        cardType: "MASTERCARD",
-        expirationDate: new Date("2029-06-30"),
-        cvv: "456",
-        cardStatus: "ACTIVE",
-        dailyLimit: 5000.00,
-        monthlyLimit: 20000.00,
-        createdAt: new Date(),
-        updatedAt: new Date()
-    },
-    {
-        cardNumber: "5412751111222233",
-        customerId: ObjectId("650000000000000000000003"),
-        mainAccountId: ObjectId("651000000000000000000004"),
-        associatedAccounts: [
-            ObjectId("651000000000000000000004")
-        ],
-        cardType: "VISA",
-        expirationDate: new Date("2027-03-31"),
-        cvv: "789",
-        cardStatus: "ACTIVE",
-        dailyLimit: 10000.00,
-        monthlyLimit: 50000.00,
-        createdAt: new Date(),
-        updatedAt: new Date()
-    }
 ]);
 
 print('debit_card_db initialized with seed data');

@@ -31,15 +31,15 @@ public class DebitCard {
 
     @Indexed
     private String customerId;
+    private String mainAccountId;
 
     @Builder.Default
     private List<String> associatedAccountIds = new ArrayList<>();
 
-    private String mainAccountId;
-
-    private String cvv;
+    private String cardType;
     private LocalDate expirationDate;
-    private String cardholderName;
+    private String cvv;
+    private String cardHolderName;
 
     @Builder.Default
     private CardStatus status = CardStatus.ACTIVE;

@@ -28,7 +28,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/debit-cards")
+@RequestMapping("/debit-cards")
 @RequiredArgsConstructor
 @Slf4j
 public class DebitCardController {
@@ -194,7 +194,7 @@ public class DebitCardController {
                 .mainAccountId(card.getMainAccountId())
                 .cvv(card.getCvv())
                 .expirationDate(card.getExpirationDate())
-                .cardholderName(card.getCardholderName())
+                .cardholderName(card.getCardHolderName())
                 .status(card.getStatus())
                 .createdAt(card.getCreatedAt())
                 .updatedAt(card.getUpdatedAt())

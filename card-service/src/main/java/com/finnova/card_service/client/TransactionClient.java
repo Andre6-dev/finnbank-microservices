@@ -5,6 +5,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,25 +16,28 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class TransactionClient {
 
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient transactionServiceWebClient;
 
     @Value("${services.transaction-service.url:http://transaction-service}")
     private String transactionServiceUrl;
+
+    public TransactionClient(@Qualifier("transactionServiceWebClient") WebClient transactionServiceWebClient) {
+        this.transactionServiceWebClient = transactionServiceWebClient;
+    }
 
     @CircuitBreaker(name = "transactionService", fallbackMethod = "fallbackWithdrawal")
     @TimeLimiter(name = "transactionService")
     public Mono<TransactionDto> withdrawal(String accountId, BigDecimal amount, String description) {
         log.info("Initiating withdrawal of {} from account: {}", amount, accountId);
 
-        return webClientBuilder.build()
+        return transactionServiceWebClient
                 .post()
                 .uri(transactionServiceUrl + "/transactions/withdrawal")
                 .bodyValue(Map.of(
-                        "accountId", accountId,
+                        "productId", accountId,
                         "amount", amount,
                         "description", description
                 ))
@@ -51,9 +55,9 @@ public class TransactionClient {
     public Flux<TransactionDto> getLast10Movements(String accountId) {
         log.info("Fetching last 10 movements for account: {}", accountId);
 
-        return webClientBuilder.build()
+        return transactionServiceWebClient
                 .get()
-                .uri(transactionServiceUrl + "/transactions/accounts/{id}/last10", accountId)
+                .uri(transactionServiceUrl + "/transactions/product/{productId}/last10", accountId)
                 .retrieve()
                 .bodyToFlux(TransactionDto.class)
                 .doOnComplete(() -> log.info("Fetched last 10 movements for account: {}", accountId))

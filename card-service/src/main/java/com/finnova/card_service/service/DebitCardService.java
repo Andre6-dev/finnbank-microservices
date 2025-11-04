@@ -57,9 +57,10 @@ public class DebitCardService {
                     DebitCard debitCard = DebitCard.builder()
                             .cardNumber(cardNumber)
                             .customerId(request.getCustomerId())
+                            .cardType(request.getCardType())
                             .cvv(generateCVV())
                             .expirationDate(LocalDate.now().plusYears(5))
-                            .cardholderName(request.getCardholderName())
+                            .cardHolderName(request.getCardholderName())
                             .associatedAccountIds(new ArrayList<>())
                             .status(CardStatus.ACTIVE)
                             .createdAt(LocalDateTime.now())
@@ -271,7 +272,7 @@ public class DebitCardService {
         return debitCardRepository.findById(id)
                 .flatMap(existingCard -> {
                     // Update only allowed fields
-                    existingCard.setCardholderName(debitCard.getCardholderName());
+                    existingCard.setCardHolderName(debitCard.getCardHolderName());
                     existingCard.setStatus(debitCard.getStatus());
                     existingCard.setUpdatedAt(LocalDateTime.now());
                     return debitCardRepository.save(existingCard);

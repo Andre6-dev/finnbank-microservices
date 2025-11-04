@@ -17,4 +17,6 @@ public class CreateDebitCardRequest {
 
     @NotBlank(message = "Cardholder name is required")
     private String cardholderName;
+
+    private String cardType; // e.g., "VISA", "MASTERCARD"
 }

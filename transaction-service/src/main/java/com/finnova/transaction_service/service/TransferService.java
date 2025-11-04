@@ -130,45 +130,62 @@ public class TransferService {
     private Mono<Transaction> executeTransfer(
             Transaction debitTransaction,
             Transaction creditTransaction,
-            Object sourceProduct,
-            Object destProduct,
+            ProductDto sourceProduct,
+            ProductDto destProduct,
             TransferRequest request
     ) {
-        BigDecimal newSourceBalance = ((ProductDto) sourceProduct)
-                .getBalance().subtract(request.getAmount());
-        BigDecimal newDestBalance = ((ProductDto) destProduct)
-                .getBalance().add(request.getAmount());
-
-        // Guardar transacción de débito
+        // Guardar transacción de débito (PENDING)
         return transactionRepository.save(debitTransaction)
                 .flatMap(savedDebit -> {
-                    // Actualizar balance de cuenta origen
-                    return productClient.updateBalance(request.getSourceProductId(), newSourceBalance)
+                    // 1️⃣ RETIRAR de cuenta origen
+                    return productClient.withdraw(
+                                    request.getSourceProductId(),
+                                    request.getAmount()
+                            )
                             .flatMap(updatedSource -> {
+                                // Actualizar transacción débito a COMPLETED
                                 savedDebit.setStatus(TransactionStatus.COMPLETED);
-                                savedDebit.setBalanceAfter(newSourceBalance);
+                                savedDebit.setBalanceAfter(updatedSource.getBalance());
                                 savedDebit.setUpdatedAt(LocalDateTime.now());
 
-                                // Guardar transacción de crédito
-                                return transactionRepository.save(creditTransaction)
+                                // Guardar transacción de crédito (PENDING)
+                                return transactionRepository.save(savedDebit)
+                                        .then(transactionRepository.save(creditTransaction))
                                         .flatMap(savedCredit -> {
-                                            // Actualizar balance de cuenta destino
-                                            return productClient.updateBalance(request.getDestinationProductId(), newDestBalance)
+                                            // 2️⃣ DEPOSITAR en cuenta destino
+                                            return productClient.deposit(
+                                                            request.getDestinationProductId(),
+                                                            request.getAmount()
+                                                    )
                                                     .flatMap(updatedDest -> {
+                                                        // Actualizar transacción crédito a COMPLETED
                                                         savedCredit.setStatus(TransactionStatus.COMPLETED);
-                                                        savedCredit.setBalanceAfter(newDestBalance);
+                                                        savedCredit.setBalanceAfter(updatedDest.getBalance());
                                                         savedCredit.setUpdatedAt(LocalDateTime.now());
 
-                                                        // Guardar ambas transacciones actualizadas
-                                                        return transactionRepository.save(savedDebit)
-                                                                .then(transactionRepository.save(savedCredit))
-                                                                .then(eventPublisher.publishTransferCompleted(savedDebit, savedCredit))
-                                                                .thenReturn(savedDebit);
+                                                        // Guardar transacción actualizada
+                                                        return transactionRepository.save(savedCredit)
+                                                                .flatMap(finalCredit ->
+                                                                        eventPublisher.publishTransferCompleted(savedDebit, finalCredit)
+                                                                                .thenReturn(savedDebit)
+                                                                );
                                                     });
                                         });
                             });
+                })
+                .onErrorResume(ex -> {
+                    log.error("Transfer execution failed: {}", ex.getMessage());
+
+                    // Marcar transacciones como FAILED
+                    debitTransaction.setStatus(TransactionStatus.FAILED);
+                    creditTransaction.setStatus(TransactionStatus.FAILED);
+
+                    return transactionRepository.save(debitTransaction)
+                            .then(transactionRepository.save(creditTransaction))
+                            .then(Mono.error(ex));
                 });
     }
+
 
     /**
      * Create debit transaction (TRANSFER_OUT)

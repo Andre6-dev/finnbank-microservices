@@ -85,7 +85,7 @@ public class GatewayConfig {
                                 .circuitBreaker(c -> c
                                         .setName("debitCardServiceCircuitBreaker")
                                         .setFallbackUri("forward:/fallback/debit-cards")))
-                        .uri("lb://DEBIT-CARD-SERVICE"))
+                        .uri("lb://CARD-SERVICE"))
 
                 // Transfer Service Routes
                 .route("transfer-service", r -> r
