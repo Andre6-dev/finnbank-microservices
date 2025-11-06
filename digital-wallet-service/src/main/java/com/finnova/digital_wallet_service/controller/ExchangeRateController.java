@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/bootcoin/exchange-rates")
+@RequestMapping("/bootcoin/exchange-rates")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Exchange Rates", description = "BootCoin exchange rate management")

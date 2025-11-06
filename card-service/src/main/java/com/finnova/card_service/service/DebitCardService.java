@@ -201,6 +201,35 @@ public class DebitCardService {
                 });
     }
 
+    // ========== DEPOSIT ==========
+
+    /**
+     * Make deposit to debit card main account
+     */
+    public Mono<TransactionDto> makeDeposit(String cardId, com.finnova.card_service.model.dto.DepositRequest request) {
+        log.info("Processing deposit for card: {}", cardId);
+
+        return debitCardRepository.findById(cardId)
+                .switchIfEmpty(Mono.error(new CardNotFoundException("Debit card not found")))
+                .flatMap(card -> {
+                    // Validate card is active
+                    if (card.getStatus() != CardStatus.ACTIVE) {
+                        return Mono.error(new InvalidOperationException("Card is not active"));
+                    }
+
+                    // Validate has associated accounts
+                    if (card.getMainAccountId() == null) {
+                        return Mono.error(new InvalidOperationException("No main account set"));
+                    }
+
+                    // Deposit to main account
+                    String description = request.getDescription() != null
+                            ? request.getDescription()
+                            : "Deposit via debit card";
+                    return transactionClient.deposit(card.getMainAccountId(), request.getAmount(), description);
+                });
+    }
+
     // ========== QUERIES ==========
 
     /**

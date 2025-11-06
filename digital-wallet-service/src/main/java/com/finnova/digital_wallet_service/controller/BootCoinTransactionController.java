@@ -22,7 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/bootcoin/transactions")
+@RequestMapping("/bootcoin/transactions")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "BootCoin Transactions", description = "BootCoin P2P transactions")

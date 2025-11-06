@@ -21,7 +21,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/bootcoin/wallets")
+@RequestMapping("/bootcoin/wallets")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "BootCoin Wallets", description = "BootCoin wallet management")

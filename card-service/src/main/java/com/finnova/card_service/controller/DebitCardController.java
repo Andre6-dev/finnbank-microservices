@@ -4,6 +4,7 @@ import com.finnova.card_service.model.dto.AssociateAccountRequest;
 import com.finnova.card_service.model.dto.BalanceResponse;
 import com.finnova.card_service.model.dto.CreateDebitCardRequest;
 import com.finnova.card_service.model.dto.DebitCardResponse;
+import com.finnova.card_service.model.dto.DepositRequest;
 import com.finnova.card_service.model.dto.PaymentRequest;
 import com.finnova.card_service.model.dto.TransactionDto;
 import com.finnova.card_service.model.dto.WithdrawalRequest;
@@ -111,6 +112,21 @@ public class DebitCardController {
                     return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
                 });
     }
+    @PostMapping("/{id}/deposit")
+    @Operation(summary = "Make deposit to debit card main account")
+    public Mono<ResponseEntity<TransactionDto>> makeDeposit(
+            @PathVariable String id,
+            @Valid @RequestBody DepositRequest request
+    ) {
+        log.info("Processing deposit for card: {}", id);
+        return debitCardService.makeDeposit(id, request)
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> {
+                    log.error("Error processing deposit", e);
+                    return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+                });
+    }
+
 
     // ========== QUERIES ==========
 

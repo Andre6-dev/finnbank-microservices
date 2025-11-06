@@ -115,7 +115,7 @@ public class GatewayConfig {
                                 .circuitBreaker(c -> c
                                         .setName("yankiServiceCircuitBreaker")
                                         .setFallbackUri("forward:/fallback/yanki")))
-                        .uri("lb://YANKI-SERVICE"))
+                        .uri("lb://DIGITAL-WALLET-SERVICE"))
 
                 // BootCoin Service Routes
                 .route("bootcoin-service", r -> r
@@ -125,7 +125,7 @@ public class GatewayConfig {
                                 .circuitBreaker(c -> c
                                         .setName("bootcoinServiceCircuitBreaker")
                                         .setFallbackUri("forward:/fallback/bootcoin")))
-                        .uri("lb://BOOTCOIN-SERVICE"))
+                        .uri("lb://DIGITAL-WALLET-SERVICE"))
 
                 .build();
     }

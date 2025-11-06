@@ -27,7 +27,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/yanki")
+@RequestMapping("/yanki")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Yanki", description = "Yanki digital wallet endpoints")

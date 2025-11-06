@@ -459,72 +459,9 @@ debitCardDb.debit_cards.insertMany([
 print('debit_card_db initialized with seed data');
 
 // ========================================
-// TRANSFER_DB
-// ========================================
-const transferDb = db.getSiblingDB('transfer_db');
-
-// Create indexes
-transferDb.transfers.createIndex({"transferNumber": 1}, {unique: true});
-transferDb.transfers.createIndex({"sourceAccountId": 1});
-transferDb.transfers.createIndex({"destinationAccountId": 1});
-transferDb.transfers.createIndex({"status": 1});
-transferDb.transfers.createIndex({"transferDate": -1});
-
-// Insert seed data
-transferDb.transfers.insertMany([
-    {
-        transferNumber: "TRF20250101000001",
-        sourceAccountId: ObjectId("651000000000000000000003"),
-        destinationAccountId: ObjectId("651000000000000000000001"),
-        amount: 2000.00,
-        currency: "PEN",
-        transferType: "INTERBANK",
-        description: "Pago de servicios",
-        destinationBank: "BCP",
-        destinationAccountNumber: "1001234567890",
-        status: "COMPLETED",
-        transferDate: new Date("2025-01-26"),
-        createdAt: new Date("2025-01-26"),
-        updatedAt: new Date("2025-01-26")
-    },
-    {
-        transferNumber: "TRF20250101000002",
-        sourceAccountId: ObjectId("651000000000000000000001"),
-        destinationAccountId: ObjectId("651000000000000000000002"),
-        amount: 500.00,
-        currency: "PEN",
-        transferType: "SAME_BANK",
-        description: "Préstamo personal",
-        destinationBank: "NTTDATA_BANK",
-        destinationAccountNumber: "1001234567891",
-        status: "COMPLETED",
-        transferDate: new Date("2025-01-27"),
-        createdAt: new Date("2025-01-27"),
-        updatedAt: new Date("2025-01-27")
-    },
-    {
-        transferNumber: "TRF20250101000003",
-        sourceAccountId: ObjectId("651000000000000000000004"),
-        destinationAccountId: ObjectId("651000000000000000000002"),
-        amount: 5000.00,
-        currency: "PEN",
-        transferType: "INTERBANK",
-        description: "Pago a proveedor",
-        destinationBank: "INTERBANK",
-        destinationAccountNumber: "1001234567891",
-        status: "PENDING",
-        transferDate: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
-    }
-]);
-
-print('transfer_db initialized with seed data');
-
-// ========================================
 // YANKI_DB
 // ========================================
-const yankiDb = db.getSiblingDB('yanki_db');
+const yankiDb = db.getSiblingDB('bootcoin_db');
 
 // Create indexes
 yankiDb.yankis.createIndex({"documentNumber": 1}, {unique: true});
@@ -532,99 +469,50 @@ yankiDb.yankis.createIndex({"phoneNumber": 1}, {unique: true});
 yankiDb.yankis.createIndex({"email": 1});
 yankiDb.yankis.createIndex({"status": 1});
 
-yankiDb.yanki_transactions.createIndex({"yankiId": 1});
-yankiDb.yanki_transactions.createIndex({"transactionType": 1});
-yankiDb.yanki_transactions.createIndex({"transactionDate": -1});
-
 // Insert seed data - Yanki accounts
 yankiDb.yankis.insertMany([
     {
         _id: ObjectId("653000000000000000000001"),
+        documentType: "DNI",
         documentNumber: "12345678",
         phoneNumber: "987654321",
+        imei: "352099001761481",
         email: "jperez@email.com",
         balance: 500.00,
-        currency: "PEN",
-        associatedDebitCard: "5412751234567890",
+        associatedDebitCardId: "5412751234567890",
         status: "ACTIVE",
         createdAt: new Date(),
         updatedAt: new Date()
     },
     {
         _id: ObjectId("653000000000000000000002"),
+        documentType: "DNI",
         documentNumber: "87654321",
         phoneNumber: "912345678",
+        imei: "352099001761482",
         email: "mgarcia@email.com",
         balance: 1200.00,
         currency: "PEN",
-        associatedDebitCard: "5412759876543210",
+        associatedDebitCardId: "5412759876543210",
         status: "ACTIVE",
         createdAt: new Date(),
         updatedAt: new Date()
     },
     {
         _id: ObjectId("653000000000000000000003"),
+        documentType: "DNI",
         documentNumber: "11223344",
         phoneNumber: "998877665",
+        imei: "352099001761483",
         email: "lrodriguez@email.com",
         balance: 250.00,
         currency: "PEN",
-        associatedDebitCard: null,
+        associatedDebitCardId: null,
         status: "ACTIVE",
         createdAt: new Date(),
         updatedAt: new Date()
     }
 ]);
-
-// Insert seed data - Yanki transactions
-yankiDb.yanki_transactions.insertMany([
-    {
-        yankiId: ObjectId("653000000000000000000001"),
-        transactionType: "SEND",
-        amount: 100.00,
-        currency: "PEN",
-        destinationPhoneNumber: "912345678",
-        description: "Pago de almuerzo",
-        status: "COMPLETED",
-        transactionDate: new Date("2025-01-25"),
-        createdAt: new Date("2025-01-25")
-    },
-    {
-        yankiId: ObjectId("653000000000000000000002"),
-        transactionType: "RECEIVE",
-        amount: 100.00,
-        currency: "PEN",
-        sourcePhoneNumber: "987654321",
-        description: "Pago de almuerzo",
-        status: "COMPLETED",
-        transactionDate: new Date("2025-01-25"),
-        createdAt: new Date("2025-01-25")
-    },
-    {
-        yankiId: ObjectId("653000000000000000000001"),
-        transactionType: "RECHARGE",
-        amount: 200.00,
-        currency: "PEN",
-        description: "Recarga desde tarjeta",
-        status: "COMPLETED",
-        transactionDate: new Date("2025-01-26"),
-        createdAt: new Date("2025-01-26")
-    },
-    {
-        yankiId: ObjectId("653000000000000000000003"),
-        transactionType: "PAYMENT",
-        amount: 50.00,
-        currency: "PEN",
-        merchantName: "Tienda XYZ",
-        description: "Compra en comercio",
-        status: "COMPLETED",
-        transactionDate: new Date("2025-01-27"),
-        createdAt: new Date("2025-01-27")
-    }
-]);
-
-print('yanki_db initialized with seed data');
-
 // ========================================
 // BOOTCOIN_DB
 // ========================================
@@ -647,21 +535,22 @@ bootcoinDb.bootcoin_transactions.createIndex({"transactionDate": -1});
 bootcoinDb.bootcoin_wallets.insertMany([
     {
         _id: ObjectId("654000000000000000000001"),
+        documentType: "DNI",
         documentNumber: "12345678",
         phoneNumber: "987654321",
         email: "jperez@email.com",
-        bootcoinBalance: 50.00,
-        penBalance: 1000.00,
+        bootCoinBalance: 50.00,
         status: "ACTIVE",
         createdAt: new Date(),
         updatedAt: new Date()
     },
     {
         _id: ObjectId("654000000000000000000002"),
+        documentType: "DNI",
         documentNumber: "87654321",
         phoneNumber: "912345678",
         email: "mgarcia@email.com",
-        bootcoinBalance: 100.00,
+        bootCoinBalance: 100.00,
         penBalance: 2500.00,
         status: "ACTIVE",
         createdAt: new Date(),
@@ -669,10 +558,11 @@ bootcoinDb.bootcoin_wallets.insertMany([
     },
     {
         _id: ObjectId("654000000000000000000003"),
+        documentType: "DNI",
         documentNumber: "11223344",
         phoneNumber: "998877665",
         email: "lrodriguez@email.com",
-        bootcoinBalance: 25.00,
+        bootCoinBalance: 25.00,
         penBalance: 500.00,
         status: "ACTIVE",
         createdAt: new Date(),
@@ -686,18 +576,21 @@ bootcoinDb.exchange_rates.insertMany([
         buyRate: 3.80,
         sellRate: 3.75,
         effectiveDate: new Date(),
+        isActive: true,
         createdAt: new Date()
     },
     {
         buyRate: 3.78,
         sellRate: 3.73,
         effectiveDate: new Date(new Date().setDate(new Date().getDate() - 1)),
+        isActive: true,
         createdAt: new Date(new Date().setDate(new Date().getDate() - 1))
     },
     {
         buyRate: 3.82,
         sellRate: 3.77,
         effectiveDate: new Date(new Date().setDate(new Date().getDate() - 2)),
+        isActive: true,
         createdAt: new Date(new Date().setDate(new Date().getDate() - 2))
     }
 ]);
@@ -708,10 +601,11 @@ bootcoinDb.bootcoin_transactions.insertMany([
         transactionNumber: "BTC20250101000001",
         buyerWalletId: ObjectId("654000000000000000000001"),
         sellerWalletId: ObjectId("654000000000000000000002"),
-        bootcoinAmount: 10.00,
-        penAmount: 37.50,
+        solesAmount: 10.00,
+        bootCoinAmount: 37.50,
         exchangeRate: 3.75,
-        transactionType: "BUY",
+        paymentMethod: "YANKI",
+        paymentDetails: "Buy via bank transfer",
         status: "COMPLETED",
         transactionDate: new Date("2025-01-24"),
         createdAt: new Date("2025-01-24"),
@@ -721,10 +615,11 @@ bootcoinDb.bootcoin_transactions.insertMany([
         transactionNumber: "BTC20250101000002",
         buyerWalletId: ObjectId("654000000000000000000003"),
         sellerWalletId: ObjectId("654000000000000000000002"),
-        bootcoinAmount: 5.00,
-        penAmount: 18.75,
+        solesAmount: 5.00,
+        bootCoinAmount: 18.75,
         exchangeRate: 3.75,
-        transactionType: "BUY",
+        paymentMethod: "YANKI",
+        paymentDetails: "Buy via bank transfer",
         status: "COMPLETED",
         transactionDate: new Date("2025-01-25"),
         createdAt: new Date("2025-01-25"),
@@ -734,10 +629,11 @@ bootcoinDb.bootcoin_transactions.insertMany([
         transactionNumber: "BTC20250101000003",
         buyerWalletId: ObjectId("654000000000000000000002"),
         sellerWalletId: ObjectId("654000000000000000000001"),
-        bootcoinAmount: 15.00,
-        penAmount: 57.00,
+        solesAmount: 15.00,
+        bootCoinAmount: 57.00,
         exchangeRate: 3.80,
-        transactionType: "SELL",
+        paymentMethod: "BANK_TRANSFER",
+        paymentDetails: "Sell via bank transfer",
         status: "PENDING",
         transactionDate: new Date(),
         createdAt: new Date(),

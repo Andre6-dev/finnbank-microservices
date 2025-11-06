@@ -55,6 +55,7 @@ public class YankiService {
                                         .email(request.getEmail())
                                         .balance(BigDecimal.ZERO)
                                         .status(WalletStatus.ACTIVE)
+                                        .currency(request.getCurrency())
                                         .createdAt(LocalDateTime.now())
                                         .build();
 

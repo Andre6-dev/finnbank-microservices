@@ -48,6 +48,33 @@ public class TransactionClient {
     }
 
     /**
+     * Deposit to account
+     */
+    @CircuitBreaker(name = "transactionService", fallbackMethod = "fallbackDeposit")
+    @TimeLimiter(name = "transactionService")
+    public Mono<TransactionDto> deposit(String accountId, BigDecimal amount, String description) {
+        log.info("Initiating deposit of {} to account: {}", amount, accountId);
+
+        return transactionServiceWebClient
+                .post()
+                .uri(transactionServiceUrl + "/transactions/deposit")
+                .bodyValue(Map.of(
+                        "productId", accountId,
+                        "amount", amount,
+                        "description", description
+                ))
+                .retrieve()
+                .bodyToMono(TransactionDto.class)
+                .doOnSuccess(transaction -> log.info("Deposit successful: {}", transaction))
+                .doOnError(error -> log.error("Error during deposit to account {}: {}", accountId, error.getMessage()));
+    }
+
+    /**
+    public Mono<TransactionDto> fallbackDeposit(String accountId, BigDecimal amount, String description, Exception ex) {
+        log.error("Fallback: deposit failed for account: {}", accountId, ex);
+        return Mono.error(new RuntimeException("Transaction service is unavailable. Please try again later."));
+    }
+
      * Get last 10 movements for an account
      */
     @CircuitBreaker(name = "transactionService", fallbackMethod = "fallbackGetMovements")

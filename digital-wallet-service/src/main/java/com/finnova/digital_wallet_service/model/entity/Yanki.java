@@ -38,6 +38,7 @@ public class Yanki {
     @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
+    private String currency; // e.g., USD, EUR
     private String associatedDebitCardId; // Optional
 
     @Builder.Default

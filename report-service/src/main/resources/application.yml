@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: report-service
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
+      retry:
+        initial-interval: 1000
+        max-attempts: 6
+        max-interval: 2000
+        multiplier: 1.1
+  config:
+    import: "optional:configserver:http://localhost:8888"
+
+logging:
+  level:
+    com.finnova.digital_wallet_service: DEBUG
