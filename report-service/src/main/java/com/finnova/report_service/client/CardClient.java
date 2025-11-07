@@ -21,7 +21,7 @@ public class CardClient {
     public Flux<DebitCardDto> getDebitCardsByCustomer(String customerId) {
         log.info("Fetching debit cards for customer: {}", customerId);
         return webClient.get()
-                .uri("http://card-service/api/debit-cards/customer/{customerId}", customerId)
+                .uri("http://card-service/debit-cards/customer/{customerId}", customerId)
                 .retrieve()
                 .bodyToFlux(DebitCardDto.class)
                 .doOnError(error -> log.error("Error fetching debit cards for customer: {}", customerId, error));

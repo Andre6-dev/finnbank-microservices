@@ -5,6 +5,8 @@ import com.finnova.report_service.model.dto.ConsolidatedReportDto;
 import com.finnova.report_service.model.dto.DailyAverageReportDto;
 import com.finnova.report_service.model.dto.ProductReportDto;
 import com.finnova.report_service.service.ReportService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,7 +17,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/api/reports")
+@RequestMapping("/reports")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Reports", description = "Report generation endpoints")

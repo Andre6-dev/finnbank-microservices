@@ -23,7 +23,7 @@ public class TransactionClient {
     public Flux<TransactionDto> getTransactionsByCustomer(String customerId) {
         log.info("Fetching transactions for customer: {}", customerId);
         return webClient.get()
-                .uri("http://transaction-service/api/transactions/customer/{customerId}", customerId)
+                .uri("http://transaction-service/transactions/customer/{customerId}", customerId)
                 .retrieve()
                 .bodyToFlux(TransactionDto.class)
                 .doOnError(error -> log.error("Error fetching transactions for customer: {}", customerId, error));
@@ -34,7 +34,7 @@ public class TransactionClient {
     public Flux<TransactionDto> getTransactionsByProduct(String productId) {
         log.info("Fetching transactions for product: {}", productId);
         return webClient.get()
-                .uri("http://transaction-service/api/transactions/product/{productId}", productId)
+                .uri("http://transaction-service/transactions/product/{productId}", productId)
                 .retrieve()
                 .bodyToFlux(TransactionDto.class)
                 .doOnError(error -> log.error("Error fetching transactions for product: {}", productId, error));
@@ -48,15 +48,13 @@ public class TransactionClient {
             LocalDateTime endDate
     ) {
         log.info("Fetching transactions for product: {} between {} and {}", productId, startDate, endDate);
+        // Filtramos del lado del cliente ya que el endpoint no tiene query params para fechas
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("http://transaction-service/api/transactions/product/{productId}")
-                        .queryParam("startDate", startDate)
-                        .queryParam("endDate", endDate)
-                        .build(productId))
+                .uri("http://transaction-service/transactions/product/{productId}", productId)
                 .retrieve()
                 .bodyToFlux(TransactionDto.class)
-                .filter(tx -> tx.getTransactionDate().isAfter(startDate) && tx.getTransactionDate().isBefore(endDate))
+                .filter(tx -> !tx.getTransactionDate().isBefore(startDate)
+                        && !tx.getTransactionDate().isAfter(endDate))
                 .doOnError(error -> log.error("Error fetching transactions for product in date range: {}", productId, error));
     }
 

@@ -21,7 +21,7 @@ public class CustomerClient {
     public Mono<CustomerDto> getCustomer(String customerId) {
         log.info("Fetching customer: {}", customerId);
         return webClient.get()
-                .uri("http://customer-service/api/customers/{id}", customerId)
+                .uri("http://customer-service/customers/{id}", customerId)
                 .retrieve()
                 .bodyToMono(CustomerDto.class)
                 .doOnError(error -> log.error("Error fetching customer: {}", customerId, error));

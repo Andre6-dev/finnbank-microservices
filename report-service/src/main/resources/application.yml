@@ -12,7 +12,3 @@ spring:
         multiplier: 1.1
   config:
     import: "optional:configserver:http://localhost:8888"
-
-logging:
-  level:
-    com.finnova.digital_wallet_service: DEBUG
